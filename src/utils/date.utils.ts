@@ -12,7 +12,20 @@ import { es } from "date-fns/locale";
  * Formatear fecha a string legible
  */
 export const formatDate = (date: Date | string, formatStr = "PP"): string => {
-  const dateObj = typeof date === "string" ? new Date(date) : date;
+  let dateObj: Date;
+
+  if (typeof date === "string") {
+    // If it's a simple date string (YYYY-MM-DD), parse it as local date
+    // to avoid timezone shifts (new Date("YYYY-MM-DD") parses as UTC)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      dateObj = parse(date, "yyyy-MM-dd", new Date());
+    } else {
+      dateObj = new Date(date);
+    }
+  } else {
+    dateObj = date;
+  }
+
   return format(dateObj, formatStr, { locale: es });
 };
 

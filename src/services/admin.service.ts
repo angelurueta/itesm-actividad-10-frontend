@@ -194,4 +194,18 @@ export class AdminService {
     const result = await response.json();
     return result.data;
   }
+  /**
+   * Get past insights
+   */
+  static async getPastInsights() {
+    const { supabase } = await import("./supabase");
+
+    const { data, error } = await supabase
+      .from("insights_ia")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data;
+  }
 }

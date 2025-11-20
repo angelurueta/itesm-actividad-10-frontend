@@ -6,9 +6,7 @@ import { Spinner } from "@atoms/Spinner";
 import { Alert } from "@atoms/Alert";
 import { Modal } from "@atoms/Modal";
 import { useAdmin } from "@hooks/useAdmin";
-import { useLanguage } from "@/i18n";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDate } from "@utils/date.utils";
 import "./AdminReservations.scss";
 
 interface Reservation {
@@ -26,7 +24,6 @@ interface Reservation {
 }
 
 export const AdminReservations: React.FC = () => {
-  const { t } = useLanguage();
   const { getAllReservations, updateReservation, loading, error } = useAdmin();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [filteredReservations, setFilteredReservations] = useState<Reservation[]>([]);
@@ -38,7 +35,7 @@ export const AdminReservations: React.FC = () => {
   });
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
-  const [updateData, setUpdateData] = useState({ estado: "" });
+  const [updateData, setUpdateData] = useState<Partial<Reservation>>({});
 
   useEffect(() => {
     loadReservations();
@@ -75,7 +72,7 @@ export const AdminReservations: React.FC = () => {
 
       if (filters.busqueda) {
         const search = filters.busqueda.toLowerCase();
-        filtered = filtered.filter(r => 
+        filtered = filtered.filter(r =>
           (r.folio || '').toLowerCase().includes(search) ||
           (r.nombre_invitado || '').toLowerCase().includes(search) ||
           (r.email_invitado || '').toLowerCase().includes(search)
@@ -98,7 +95,16 @@ export const AdminReservations: React.FC = () => {
 
   const handleUpdateClick = (reservation: Reservation) => {
     setSelectedReservation(reservation);
-    setUpdateData({ estado: reservation.estado });
+    setUpdateData({
+      estado: reservation.estado,
+      fecha: reservation.fecha,
+      hora: reservation.hora,
+      personas: reservation.personas,
+      nombre_invitado: reservation.nombre_invitado,
+      email_invitado: reservation.email_invitado,
+      telefono_invitado: reservation.telefono_invitado,
+      notas: reservation.notas
+    });
     setShowUpdateModal(true);
   };
 
@@ -231,7 +237,7 @@ export const AdminReservations: React.FC = () => {
                       <span className="admin-reservations__folio">{reservation.folio}</span>
                     </td>
                     <td>
-                      {format(new Date(reservation.fecha), 'dd/MM/yyyy', { locale: es })}
+                      {formatDate(reservation.fecha, 'dd/MM/yyyy')}
                     </td>
                     <td>
                       {reservation.hora}
@@ -282,25 +288,76 @@ export const AdminReservations: React.FC = () => {
         >
           {selectedReservation && (
             <div className="admin-reservations__update-form">
-              <div className="admin-reservations__reservation-details">
-                <h4>Detalles de la Reserva</h4>
-                <p><strong>Folio:</strong> {selectedReservation.folio}</p>
-                <p><strong>Fecha:</strong> {format(new Date(selectedReservation.fecha), 'dd/MM/yyyy')}</p>
-                <p><strong>Hora:</strong> {selectedReservation.hora}</p>
-                <p><strong>Personas:</strong> {selectedReservation.personas}</p>
-                <p><strong>Cliente:</strong> {selectedReservation.nombre_invitado || 'N/A'}</p>
-              </div>
-              <div className="admin-reservations__status-update">
-                <label className="admin-reservations__update-label">Estado</label>
-                <select
-                  value={updateData.estado}
-                  onChange={(e) => setUpdateData({ estado: e.target.value })}
-                  className="admin-reservations__status-select"
-                >
-                  <option value="pendiente">Pendiente</option>
-                  <option value="confirmada">Confirmada</option>
-                  <option value="cancelada">Cancelada</option>
-                </select>
+              <div className="admin-reservations__form-grid">
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Fecha</label>
+                  <Input
+                    type="date"
+                    value={updateData.fecha || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, fecha: e.target.value })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Hora</label>
+                  <Input
+                    type="time"
+                    value={updateData.hora || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, hora: e.target.value })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Personas</label>
+                  <Input
+                    type="number"
+                    value={updateData.personas || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, personas: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Estado</label>
+                  <select
+                    value={updateData.estado || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, estado: e.target.value })}
+                    className="admin-reservations__status-select"
+                  >
+                    <option value="pendiente">Pendiente</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="cancelada">Cancelada</option>
+                  </select>
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Nombre Invitado</label>
+                  <Input
+                    type="text"
+                    value={updateData.nombre_invitado || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, nombre_invitado: e.target.value })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Email Invitado</label>
+                  <Input
+                    type="email"
+                    value={updateData.email_invitado || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, email_invitado: e.target.value })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group">
+                  <label className="admin-reservations__update-label">Teléfono Invitado</label>
+                  <Input
+                    type="tel"
+                    value={updateData.telefono_invitado || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, telefono_invitado: e.target.value })}
+                  />
+                </div>
+                <div className="admin-reservations__form-group full-width">
+                  <label className="admin-reservations__update-label">Notas</label>
+                  <textarea
+                    className="admin-reservations__textarea"
+                    value={updateData.notas || ''}
+                    onChange={(e) => setUpdateData({ ...updateData, notas: e.target.value })}
+                    rows={3}
+                  />
+                </div>
               </div>
             </div>
           )}

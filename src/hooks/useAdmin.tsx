@@ -105,6 +105,21 @@ export const useAdmin = () => {
     }
   };
 
+  const getPastInsights = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await AdminService.getPastInsights();
+      return data;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error loading past insights';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
@@ -113,6 +128,7 @@ export const useAdmin = () => {
     updateReservation,
     getTables,
     getConfiguracion,
-    generateReport
+    generateReport,
+    getPastInsights
   };
 };
