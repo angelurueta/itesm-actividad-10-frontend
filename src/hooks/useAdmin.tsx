@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { AdminService } from "@services/admin.service";
 export const useAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getDashboardStats = async () => {
+  const getDashboardStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -17,9 +17,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getAllReservations = async (filters?: {
+  const getAllReservations = useCallback(async (filters?: {
     fecha_inicio?: string;
     fecha_fin?: string;
     estado?: string;
@@ -36,9 +36,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const updateReservation = async (id_reserva: number, updateData: Record<string, unknown>) => {
+  const updateReservation = useCallback(async (id_reserva: number, updateData: Record<string, unknown>) => {
     try {
       setLoading(true);
       setError(null);
@@ -51,9 +51,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getTables = async () => {
+  const getTables = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -66,9 +66,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getConfiguracion = async () => {
+  const getConfiguracion = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -81,9 +81,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const generateReport = async (params: {
+  const generateReport = useCallback(async (params: {
     tipo_reporte: "insights_ia" | "ocupacion_diaria" | "reporte_completo";
     fecha_desde: string;
     fecha_hasta: string;
@@ -100,9 +100,9 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getPastInsights = async () => {
+  const getPastInsights = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -115,7 +115,7 @@ export const useAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     loading,
