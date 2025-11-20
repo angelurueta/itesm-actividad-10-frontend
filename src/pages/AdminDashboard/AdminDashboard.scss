@@ -12,7 +12,7 @@
 
   &__header {
     margin-bottom: 2rem;
-    text-align: center;
+    text-align: left;
   }
 
   &__title {
@@ -176,9 +176,138 @@
     font-weight: 600;
     color: $color-text-primary;
   }
+
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  &__sidebar {
+    position: sticky;
+    top: 2rem;
+  }
+
+  &__timeline-card {
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  &__timeline-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  &__timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #e2e8f0;
+    }
+  }
+
+  &__timeline-item {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+  }
+
+  &__timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: white;
+    border: 3px solid $color-text-secondary;
+    z-index: 1;
+    flex-shrink: 0;
+
+    &--confirmada {
+      border-color: #10B981;
+    }
+
+    &--pendiente {
+      border-color: #F59E0B;
+    }
+  }
+
+  &__timeline-content {
+    flex: 1;
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__timeline-time {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $color-text-secondary;
+    margin-bottom: 0.25rem;
+  }
+
+  &__timeline-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__timeline-name {
+    font-weight: 500;
+    color: $color-text-primary;
+    font-size: 0.95rem;
+  }
+
+  &__timeline-details {
+    font-size: 0.85rem;
+    color: $color-text-secondary;
+  }
+
+  &__timeline-status {
+    display: flex;
+  }
+
+  &__timeline-empty {
+    text-align: center;
+    color: $color-text-secondary;
+    padding: 1rem;
+    font-style: italic;
+  }
 }
 
 // Responsive design
+@media (max-width: 1024px) {
+  .admin-dashboard {
+    &__layout {
+      grid-template-columns: 1fr;
+    }
+
+    &__sidebar {
+      position: static;
+      order: 2; // Move to bottom on tablet/mobile
+    }
+
+    &__timeline-card {
+      max-height: 400px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .admin-dashboard {
     padding: 1rem 0;
@@ -192,9 +321,8 @@
       gap: 1rem;
     }
 
-    &__charts {
-      grid-template-columns: 1fr;
-      gap: 1rem;
+    &__charts-section {
+      margin-bottom: 1.5rem;
     }
 
     &__chart-container {
