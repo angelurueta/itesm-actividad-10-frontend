@@ -7,6 +7,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartData,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { Card } from "@atoms/Card";
@@ -34,34 +35,14 @@ export const AdminDashboard: React.FC = () => {
 
   // Chart State
   const [chartTimeRange, setChartTimeRange] = useState<'1week' | '2weeks' | '1month'>('2weeks');
-  const [chartData, setChartData] = useState<any>(null);
+  const [chartData, setChartData] = useState<ChartData<'bar'> | null>(null);
   const [loadingChart, setLoadingChart] = useState(false);
 
   // Timeline State
   const [timelineReservations, setTimelineReservations] = useState<Reservation[]>([]);
   const [loadingTimeline, setLoadingTimeline] = useState(false);
 
-  useEffect(() => {
-    const loadStats = async () => {
-      console.log('AdminDashboard: Loading stats...');
-      try {
-        const data = await getDashboardStats();
-        console.log('AdminDashboard: Data received:', data);
-        setStats(data);
-      } catch (err) {
-        console.error('AdminDashboard: Error loading stats:', err);
-      }
-    };
-
-    loadStats();
-    loadTimelineData();
-  }, []);
-
-  useEffect(() => {
-    loadChartData();
-  }, [chartTimeRange]);
-
-  const loadTimelineData = async () => {
+  const loadTimelineData = React.useCallback(async () => {
     setLoadingTimeline(true);
     try {
       const today = startOfDay(new Date());
@@ -87,9 +68,9 @@ export const AdminDashboard: React.FC = () => {
     } finally {
       setLoadingTimeline(false);
     }
-  };
+  }, []);
 
-  const loadChartData = async () => {
+  const loadChartData = React.useCallback(async () => {
     setLoadingChart(true);
     try {
       const today = startOfDay(new Date());
@@ -158,7 +139,27 @@ export const AdminDashboard: React.FC = () => {
     } finally {
       setLoadingChart(false);
     }
-  };
+  }, [chartTimeRange]);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      console.log('AdminDashboard: Loading stats...');
+      try {
+        const data = await getDashboardStats();
+        console.log('AdminDashboard: Data received:', data);
+        setStats(data);
+      } catch (err) {
+        console.error('AdminDashboard: Error loading stats:', err);
+      }
+    };
+
+    loadStats();
+    loadTimelineData();
+  }, [getDashboardStats, loadTimelineData]);
+
+  useEffect(() => {
+    loadChartData();
+  }, [loadChartData]);
 
   const chartOptions = {
     responsive: true,
@@ -317,7 +318,7 @@ export const AdminDashboard: React.FC = () => {
                         <select
                           className="admin-dashboard__chart-select"
                           value={chartTimeRange}
-                          onChange={(e) => setChartTimeRange(e.target.value as any)}
+                          onChange={(e) => setChartTimeRange(e.target.value as '1week' | '2weeks' | '1month')}
                         >
                           <option value="1week">Próxima Semana</option>
                           <option value="2weeks">Próximas 2 Semanas</option>

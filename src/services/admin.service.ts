@@ -127,7 +127,7 @@ export class AdminService {
   /**
    * Update reservation
    */
-  static async updateReservation(id_reserva: number, updateData: any) {
+  static async updateReservation(id_reserva: number, updateData: Record<string, unknown>) {
     const response = await fetch(`${this.BASE_URL}/admin-panel`, {
       method: "POST",
       headers: {

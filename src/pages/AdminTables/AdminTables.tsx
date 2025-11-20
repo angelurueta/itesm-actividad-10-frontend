@@ -5,7 +5,7 @@ import { Input } from "@atoms/Input";
 import { Spinner } from "@atoms/Spinner";
 import { Alert } from "@atoms/Alert";
 import { useAdmin } from "@hooks/useAdmin";
-import { useLanguage } from "@/i18n";
+
 import "./AdminTables.scss";
 
 interface Table {
@@ -20,7 +20,7 @@ interface Table {
 }
 
 export const AdminTables: React.FC = () => {
-  const { t } = useLanguage();
+
   const { getTables, loading, error } = useAdmin();
   const [tables, setTables] = useState<Table[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -32,18 +32,18 @@ export const AdminTables: React.FC = () => {
     activa: true
   });
 
-  useEffect(() => {
-    loadTables();
-  }, []);
-
-  const loadTables = async () => {
+  const loadTables = React.useCallback(async () => {
     try {
       const data = await getTables();
       setTables(data || []);
     } catch (err) {
       console.error('Error loading tables:', err);
     }
-  };
+  }, [getTables]);
+
+  useEffect(() => {
+    loadTables();
+  }, [loadTables]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -190,7 +190,7 @@ export const AdminTables: React.FC = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="admin-tables__table-info">
                   <div className="admin-tables__table-capacity">
                     <span className="admin-tables__table-label">Capacidad:</span>
@@ -236,7 +236,7 @@ export const AdminTables: React.FC = () => {
                   ✕
                 </Button>
               </div>
-              
+
               <div className="admin-tables__modal-form">
                 <div className="admin-tables__form-group">
                   <label className="admin-tables__form-label">Número de Mesa</label>
@@ -248,7 +248,7 @@ export const AdminTables: React.FC = () => {
                     placeholder="Ej: Mesa 1, A1, VIP 1"
                   />
                 </div>
-                
+
                 <div className="admin-tables__form-group">
                   <label className="admin-tables__form-label">Capacidad</label>
                   <Input
@@ -260,7 +260,7 @@ export const AdminTables: React.FC = () => {
                     max="20"
                   />
                 </div>
-                
+
                 <div className="admin-tables__form-group">
                   <label className="admin-tables__form-label">Ubicación</label>
                   <select
@@ -277,7 +277,7 @@ export const AdminTables: React.FC = () => {
                     <option value="privada">Sala Privada</option>
                   </select>
                 </div>
-                
+
                 <div className="admin-tables__form-group">
                   <label className="admin-tables__form-checkbox">
                     <input
@@ -290,7 +290,7 @@ export const AdminTables: React.FC = () => {
                   </label>
                 </div>
               </div>
-              
+
               <div className="admin-tables__modal-actions">
                 <Button
                   variant="secondary"
@@ -301,8 +301,8 @@ export const AdminTables: React.FC = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    // Here would be the save logic
-                    console.log('Save table:', formData);
+                    // TODO: Implement save logic when backend endpoint is available
+                    console.warn('Save table functionality not implemented', formData);
                     setShowAddModal(false);
                   }}
                 >

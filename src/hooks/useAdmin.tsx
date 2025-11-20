@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { AdminService } from "@services/admin.service";
-import { useLanguage } from "@/i18n";
-
 export const useAdmin = () => {
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +38,7 @@ export const useAdmin = () => {
     }
   };
 
-  const updateReservation = async (id_reserva: number, updateData: any) => {
+  const updateReservation = async (id_reserva: number, updateData: Record<string, unknown>) => {
     try {
       setLoading(true);
       setError(null);

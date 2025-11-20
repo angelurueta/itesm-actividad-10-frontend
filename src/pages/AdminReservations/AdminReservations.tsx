@@ -26,7 +26,7 @@ interface Reservation {
 export const AdminReservations: React.FC = () => {
   const { getAllReservations, updateReservation, loading, error } = useAdmin();
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [filteredReservations, setFilteredReservations] = useState<Reservation[]>([]);
+
   const [filters, setFilters] = useState({
     fecha_desde: "",
     fecha_hasta: "",
@@ -37,24 +37,20 @@ export const AdminReservations: React.FC = () => {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [updateData, setUpdateData] = useState<Partial<Reservation>>({});
 
-  useEffect(() => {
-    loadReservations();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [reservations, filters]);
-
-  const loadReservations = async () => {
+  const loadReservations = React.useCallback(async () => {
     try {
       const data = await getAllReservations();
       setReservations(data || []);
     } catch (err) {
       console.error('Error loading reservations:', err);
     }
-  };
+  }, [getAllReservations]);
 
-  const applyFilters = () => {
+  useEffect(() => {
+    loadReservations();
+  }, [loadReservations]);
+
+  const filteredReservations = React.useMemo(() => {
     try {
       let filtered = [...reservations];
 
@@ -79,12 +75,12 @@ export const AdminReservations: React.FC = () => {
         );
       }
 
-      setFilteredReservations(filtered);
+      return filtered;
     } catch (error) {
       console.error('Error applying filters:', error);
-      setFilteredReservations(reservations);
+      return reservations;
     }
-  };
+  }, [reservations, filters]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFilters({

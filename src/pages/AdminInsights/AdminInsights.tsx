@@ -47,13 +47,7 @@ export const AdminInsights: React.FC = () => {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (activeTab === 'history') {
-      loadPastInsights();
-    }
-  }, [activeTab]);
-
-  const loadPastInsights = async () => {
+  const loadPastInsights = React.useCallback(async () => {
     try {
       const data = await getPastInsights();
       if (data) {
@@ -62,7 +56,13 @@ export const AdminInsights: React.FC = () => {
     } catch (err) {
       console.error('Error loading past insights:', err);
     }
-  };
+  }, [getPastInsights]);
+
+  React.useEffect(() => {
+    if (activeTab === 'history') {
+      loadPastInsights();
+    }
+  }, [activeTab, loadPastInsights]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
