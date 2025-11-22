@@ -64,11 +64,15 @@ export interface Reservation {
  */
 export interface Table {
   id: number;
-  numero_mesa: string;
+  numero_mesa?: string;
   capacidad: number;
-  ubicacion: string;
+  ubicacion?: string;
   activa: boolean;
-  estado: TableStatus;
+  estado: TableStatus | string;
+  x?: number;
+  y?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**

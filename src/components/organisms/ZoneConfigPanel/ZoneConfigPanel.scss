@@ -1,0 +1,89 @@
+@use "@styles/variables.scss" as *;
+@use "@styles/mixins.scss" as *;
+
+.zone-config {
+    background: white;
+    border-radius: $border-radius-lg;
+    padding: $spacing-md;
+    box-shadow: $shadow-sm;
+    height: 100%;
+
+    &__title {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        margin-bottom: $spacing-md;
+        color: $color-text-primary;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+        padding-bottom: $spacing-md;
+        border-bottom: 1px solid $color-gray-200;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__label {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $color-text-secondary;
+        text-transform: capitalize;
+    }
+
+    &__input-group {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+    }
+
+    &__input {
+        width: 80px;
+        padding: $spacing-xs $spacing-sm;
+        border: 1px solid $color-gray-300;
+        border-radius: $border-radius-md;
+        font-size: $font-size-md;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+        }
+    }
+
+    &__stats {
+        font-size: $font-size-xs;
+        color: $color-text-secondary;
+        margin-left: auto;
+    }
+
+    &__progress {
+        height: 4px;
+        background-color: $color-gray-200;
+        border-radius: $border-radius-full;
+        overflow: hidden;
+        margin-top: $spacing-xs;
+    }
+
+    &__progress-bar {
+        height: 100%;
+        background-color: $color-primary;
+        transition: width 0.3s ease;
+
+        &--warning {
+            background-color: $color-warning;
+        }
+
+        &--full {
+            background-color: $color-error;
+        }
+    }
+}

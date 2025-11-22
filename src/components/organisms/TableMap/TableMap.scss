@@ -1,0 +1,106 @@
+@use "@styles/variables.scss" as *;
+@use "@styles/mixins.scss" as *;
+
+.table-map {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background-color: #f8f9fa;
+    border: 2px solid $color-gray-300;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    user-select: none;
+
+    &__area {
+        position: absolute;
+        border: 1px dashed $color-gray-400;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: $color-gray-500;
+        opacity: 0.5;
+        pointer-events: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+
+        &--terraza {
+            background-color: rgba($color-success-light, 0.1);
+        }
+
+        &--interior {
+            background-color: rgba($color-primary-light, 0.1);
+        }
+
+        &--vip {
+            background-color: rgba($color-secondary-light, 0.1);
+        }
+
+        &--privada {
+            background-color: rgba($color-info-light, 0.1);
+        }
+
+        &--bar {
+            background-color: rgba($color-warning-light, 0.1);
+        }
+    }
+
+    &__table {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: white;
+        border: 2px solid $color-gray-400;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        z-index: 10;
+        box-shadow: $shadow-sm;
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: $shadow-md;
+            z-index: 11;
+        }
+
+        &:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: $shadow-lg;
+            z-index: 12;
+        }
+
+        &--occupied {
+            background-color: rgba($color-error, 0.1);
+            border-color: $color-error;
+            color: $color-error;
+        }
+
+        &--available {
+            background-color: rgba($color-success, 0.1);
+            border-color: $color-success;
+            color: $color-success;
+        }
+
+        &--maintenance {
+            background-color: rgba($color-warning, 0.1);
+            border-color: $color-warning;
+            color: $color-warning;
+        }
+    }
+
+    &__table-number {
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    &__table-capacity {
+        font-size: 0.7rem;
+        color: $color-text-secondary;
+    }
+}

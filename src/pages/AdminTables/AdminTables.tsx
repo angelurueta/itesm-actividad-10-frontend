@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { Table } from "@/types";
 import { Card } from "@atoms/Card";
 import { Button } from "@atoms/Button";
 import { Input } from "@atoms/Input";
 import { Spinner } from "@atoms/Spinner";
 import { Alert } from "@atoms/Alert";
 import { useAdmin } from "@hooks/useAdmin";
+import { AdminService } from "@/services/admin.service";
 
+import { TableMap } from "@organisms/TableMap/TableMap";
+import { ZoneConfigPanel, ZoneConfig } from "@organisms/ZoneConfigPanel/ZoneConfigPanel";
+import { getZoneFromCoordinates } from "@/utils/zones";
 import "./AdminTables.scss";
-
-interface Table {
-  id: number;
-  capacidad: number;
-  numero_mesa?: string;
-  ubicacion?: string;
-  activa: boolean;
-  estado: string;
-  created_at: string;
-  updated_at?: string;
-}
 
 export const AdminTables: React.FC = () => {
 
@@ -25,12 +19,101 @@ export const AdminTables: React.FC = () => {
   const [tables, setTables] = useState<Table[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTable, setEditingTable] = useState<Table | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [formData, setFormData] = useState({
     numero_mesa: "",
     capacidad: 4,
     ubicacion: "",
     activa: true
   });
+
+  // Initial zone capacities (could be fetched from backend later)
+  const [zoneCapacities, setZoneCapacities] = useState<ZoneConfig>({
+    'Terraza': 10,
+    'Interior': 15,
+    'VIP': 5,
+    'Sala Privada': 2,
+    'Bar': 8
+  });
+
+  const handleTableMove = async (id: number, x: number, y: number) => {
+    const table = tables.find(t => t.id === id);
+    if (!table) return;
+
+    const newZone = getZoneFromCoordinates(x, y);
+    const currentZone = table.ubicacion || 'Desconocida';
+
+    // If zone hasn't changed, just update position
+    if (newZone.toLowerCase() === currentZone.toLowerCase()) {
+      try {
+        // Optimistic update
+        setTables(prev => prev.map(t => t.id === id ? { ...t, x, y } : t));
+        await AdminService.saveTable({ id, x, y });
+      } catch (error) {
+        console.error('Error updating table position:', error);
+        // Revert on error (could be improved with a proper revert mechanism)
+        loadTables();
+      }
+      return;
+    }
+
+    // Check capacity of new zone
+    const tablesInNewZone = tables.filter(t =>
+      t.id !== id && (t.ubicacion?.toLowerCase() === newZone.toLowerCase())
+    ).length;
+
+    const maxCapacity = zoneCapacities[Object.keys(zoneCapacities).find(k => k.toLowerCase() === newZone.toLowerCase()) || ''] || 100;
+
+    if (tablesInNewZone >= maxCapacity) {
+      alert(`No se puede mover la mesa. La zona ${newZone} ha alcanzado su capacidad máxima de ${maxCapacity} mesas.`);
+      return;
+    }
+
+    // Confirm move
+    if (window.confirm(`¿Estás seguro de mover la mesa ${table.numero_mesa} de ${currentZone} a ${newZone}?`)) {
+      try {
+        // Optimistic update
+        setTables(prev => prev.map(t => t.id === id ? { ...t, x, y, ubicacion: newZone } : t));
+        await AdminService.saveTable({ id, x, y, ubicacion: newZone });
+      } catch (error) {
+        console.error('Error updating table zone:', error);
+        loadTables();
+      }
+    }
+  };
+
+  const handleSaveTable = async () => {
+    try {
+      if (editingTable) {
+        // Update existing table
+        const updatedTable = { ...editingTable, ...formData, ubicacion: formData.ubicacion || editingTable.ubicacion };
+        // Optimistic update
+        setTables(prev => prev.map(t => t.id === editingTable.id ? updatedTable : t));
+
+        await AdminService.saveTable({
+          id: editingTable.id,
+          ...formData
+        });
+      } else {
+        // Add new table
+        // For new tables, we wait for the backend response to get the ID
+        const newTableData = {
+          ...formData,
+          estado: 'disponible',
+          x: 50, // Default center
+          y: 50
+        };
+
+        const savedTable = await AdminService.saveTable(newTableData);
+        setTables(prev => [...prev, savedTable]);
+      }
+      setShowAddModal(false);
+    } catch (error) {
+      console.error('Error saving table:', error);
+      alert('Error al guardar la mesa. Por favor intente de nuevo.');
+      loadTables(); // Reload to ensure consistency
+    }
+  };
 
   const loadTables = React.useCallback(async () => {
     try {
@@ -167,58 +250,97 @@ export const AdminTables: React.FC = () => {
           </Card>
         </div>
 
-        {/* Tables Grid */}
-        <Card className="admin-tables__grid" padding="md">
-          <h3 className="admin-tables__grid-title">Mesas del Restaurante</h3>
-          <div className="admin-tables__grid-container">
-            {tables.map((table) => (
-              <div
-                key={table.id}
-                className={`admin-tables__table-card admin-tables__table-card--${getLocationColor(table.ubicacion || '')}`}
-              >
-                <div className="admin-tables__table-header">
-                  <div className="admin-tables__table-number">
-                    {getStatusIcon(table.estado)} {table.numero_mesa || `Mesa ${table.id}`}
-                  </div>
-                  <div className="admin-tables__table-actions">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEditTable(table)}
-                    >
-                      ✏️
-                    </Button>
-                  </div>
-                </div>
+        {/* View Toggle */}
+        <div className="admin-tables__view-toggle" style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+          <Button
+            variant={viewMode === 'list' ? 'primary' : 'secondary'}
+            onClick={() => setViewMode('list')}
+            size="sm"
+          >
+            Vista de Lista
+          </Button>
+          <Button
+            variant={viewMode === 'map' ? 'primary' : 'secondary'}
+            onClick={() => setViewMode('map')}
+            size="sm"
+          >
+            Vista de Mapa
+          </Button>
+        </div>
 
-                <div className="admin-tables__table-info">
-                  <div className="admin-tables__table-capacity">
-                    <span className="admin-tables__table-label">Capacidad:</span>
-                    <span className="admin-tables__table-value">{table.capacidad} personas</span>
+        {/* Tables Content */}
+        {viewMode === 'list' ? (
+          <Card className="admin-tables__grid" padding="md">
+            <h3 className="admin-tables__grid-title">Mesas del Restaurante</h3>
+            <div className="admin-tables__grid-container">
+              {tables.map((table) => (
+                <div
+                  key={table.id}
+                  className={`admin-tables__table-card admin-tables__table-card--${getLocationColor(table.ubicacion || '')}`}
+                >
+                  <div className="admin-tables__table-header">
+                    <div className="admin-tables__table-number">
+                      {getStatusIcon(table.estado)} {table.numero_mesa || `Mesa ${table.id}`}
+                    </div>
+                    <div className="admin-tables__table-actions">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditTable(table)}
+                      >
+                        ✏️
+                      </Button>
+                    </div>
                   </div>
-                  <div className="admin-tables__table-location">
-                    <span className="admin-tables__table-label">Ubicación:</span>
-                    <span className="admin-tables__table-value">
-                      {table.ubicacion || 'No especificada'}
-                    </span>
-                  </div>
-                  <div className="admin-tables__table-status">
-                    <span className="admin-tables__table-label">Estado:</span>
-                    <span className="admin-tables__table-value">
-                      {getStatusText(table.estado)}
-                    </span>
-                  </div>
-                  <div className="admin-tables__table-active">
-                    <span className="admin-tables__table-label">Status:</span>
-                    <span className={`admin-tables__table-value admin-tables__table-value--${table.activa ? 'active' : 'inactive'}`}>
-                      {table.activa ? 'Activa' : 'Inactiva'}
-                    </span>
+
+                  <div className="admin-tables__table-info">
+                    <div className="admin-tables__table-capacity">
+                      <span className="admin-tables__table-label">Capacidad:</span>
+                      <span className="admin-tables__table-value">{table.capacidad} personas</span>
+                    </div>
+                    <div className="admin-tables__table-location">
+                      <span className="admin-tables__table-label">Ubicación:</span>
+                      <span className="admin-tables__table-value">
+                        {table.ubicacion || 'No especificada'}
+                      </span>
+                    </div>
+                    <div className="admin-tables__table-status">
+                      <span className="admin-tables__table-label">Estado:</span>
+                      <span className="admin-tables__table-value">
+                        {getStatusText(table.estado)}
+                      </span>
+                    </div>
+                    <div className="admin-tables__table-active">
+                      <span className="admin-tables__table-label">Status:</span>
+                      <span className={`admin-tables__table-value admin-tables__table-value--${table.activa ? 'active' : 'inactive'}`}>
+                        {table.activa ? 'Activa' : 'Inactiva'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </Card>
+        ) : (
+          <div className="admin-tables__map-container" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1rem' }}>
+            <Card className="admin-tables__map" padding="md">
+              <h3 className="admin-tables__grid-title">Mapa del Restaurante</h3>
+              <p style={{ marginBottom: '1rem', color: '#666' }}>Arrastra las mesas para reubicarlas. Doble clic para editar.</p>
+              <TableMap
+                tables={tables}
+                onTableClick={handleEditTable}
+                onTableMove={handleTableMove}
+              />
+            </Card>
+            <div className="admin-tables__sidebar">
+              <ZoneConfigPanel
+                zones={zoneCapacities}
+                tables={tables}
+                onUpdateCapacity={(zone, cap) => setZoneCapacities(prev => ({ ...prev, [zone]: cap }))}
+              />
+            </div>
           </div>
-        </Card>
+        )}
 
         {/* Add/Edit Modal */}
         {showAddModal && (
@@ -300,11 +422,7 @@ export const AdminTables: React.FC = () => {
                 </Button>
                 <Button
                   variant="primary"
-                  onClick={() => {
-                    // TODO: Implement save logic when backend endpoint is available
-                    console.warn('Save table functionality not implemented', formData);
-                    setShowAddModal(false);
-                  }}
+                  onClick={handleSaveTable}
                 >
                   {editingTable ? 'Actualizar' : 'Agregar'}
                 </Button>

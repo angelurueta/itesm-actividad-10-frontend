@@ -173,6 +173,32 @@ export class AdminService {
   }
 
   /**
+   * Save table (create or update)
+   */
+  static async saveTable(tableData: Record<string, unknown>) {
+    const action = tableData.id ? 'update_table' : 'create_table';
+
+    const response = await fetch(`${this.BASE_URL}/admin-panel`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
+      },
+      body: JSON.stringify({
+        action,
+        ...tableData
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error saving table: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result.data;
+  }
+
+  /**
    * Get configuration
    */
   static async getConfiguracion() {

@@ -2,25 +2,36 @@
 // Mixins SCSS
 // ===========================
 
+@use "sass:color";
+@use "./variables.scss" as *;
+
 // Media queries
 @mixin responsive($breakpoint) {
-  @if $breakpoint == "sm" {
+  @if $breakpoint =="sm" {
     @media (min-width: $breakpoint-sm) {
       @content;
     }
-  } @else if $breakpoint == "md" {
+  }
+
+  @else if $breakpoint =="md" {
     @media (min-width: $breakpoint-md) {
       @content;
     }
-  } @else if $breakpoint == "lg" {
+  }
+
+  @else if $breakpoint =="lg" {
     @media (min-width: $breakpoint-lg) {
       @content;
     }
-  } @else if $breakpoint == "xl" {
+  }
+
+  @else if $breakpoint =="xl" {
     @media (min-width: $breakpoint-xl) {
       @content;
     }
-  } @else if $breakpoint == "2xl" {
+  }
+
+  @else if $breakpoint =="2xl" {
     @media (min-width: $breakpoint-2xl) {
       @content;
     }
@@ -214,11 +225,9 @@
 }
 
 // Scrollbar
-@mixin scrollbar(
-  $width: 8px,
+@mixin scrollbar($width: 8px,
   $track-color: $color-gray-200,
-  $thumb-color: $color-gray-400
-) {
+  $thumb-color: $color-gray-400) {
   &::-webkit-scrollbar {
     width: $width;
     height: $width;
@@ -234,7 +243,7 @@
     border-radius: $border-radius-full;
 
     &:hover {
-      background: darken($thumb-color, 10%);
+      background: color.adjust($thumb-color, $lightness: -10%);
     }
   }
 }

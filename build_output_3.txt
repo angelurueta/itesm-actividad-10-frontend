@@ -1,0 +1,118 @@
+
+> restaurant-reservation-system@1.0.0 build
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.adjust instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+    ╷
+245 │       background: darken($thumb-color, 10%);
+    │                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    src/styles/mixins.scss 245:19  scrollbar()
+    src/styles/global.scss 191:3   root stylesheet
+
+DEPRECATION WARNING [color-functions]: darken() is deprecated. Suggestions:
+
+color.scale($color, $lightness: -12.0283018868%)
+color.adjust($color, $lightness: -10%)
+
+More info: https://sass-lang.com/d/color-functions
+
+    ╷
+245 │       background: darken($thumb-color, 10%);
+    │                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    src/styles/mixins.scss 245:19  scrollbar()
+    src/styles/global.scss 191:3   root stylesheet
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+✓ 86 modules transformed.
+x Build failed in 592ms
+error during build:
+[vite:css] [sass] Undefined variable.
+  ╷
+4 │   background-color: $color-bg-secondary;
+  │                     ^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/pages/AdminTables/AdminTables.scss 4:21  root stylesheet
+file: /Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/src/pages/AdminTables/AdminTables.scss
+
+Error: Undefined variable.
+  ╷
+4 │   background-color: $color-bg-secondary;
+  │                     ^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/pages/AdminTables/AdminTables.scss 4:21  root stylesheet
+
+Error: Undefined variable.
+  ╷
+4 │   background-color: $color-bg-secondary;
+  │                     ^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/pages/AdminTables/AdminTables.scss 4:21  root stylesheet
+    at Object.wrapException (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:2292:47)
+    at /Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:88784:23
+    at _wrapJsFunctionForAsync_closure.$protected (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:4960:15)
+    at _wrapJsFunctionForAsync_closure.call$2 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:37968:12)
+    at Object._asyncStartSync (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:4924:20)
+    at _EvaluateVisitor2.visitVariableExpression$body$_EvaluateVisitor0 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:88790:16)
+    at _EvaluateVisitor2.visitVariableExpression$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:88764:19)
+    at VariableExpression0.accept$1$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:124382:22)
+    at VariableExpression0.accept$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:124385:19)
+    at /Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:86852:41

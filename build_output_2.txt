@@ -1,0 +1,40 @@
+
+> restaurant-reservation-system@1.0.0 build
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 3 modules transformed.
+x Build failed in 223ms
+error during build:
+[vite:css] [sass] @use rules must be written before any other rules.
+  ╷
+1 │ @import "@styles/variables.scss"; @import "@styles/mixins.scss";@use "./variables.scss" as *;
+  │                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/styles/global.scss 1:65  root stylesheet
+file: /Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/src/styles/global.scss
+
+Error: @use rules must be written before any other rules.
+  ╷
+1 │ @import "@styles/variables.scss"; @import "@styles/mixins.scss";@use "./variables.scss" as *;
+  │                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/styles/global.scss 1:65  root stylesheet
+
+Error: @use rules must be written before any other rules.
+  ╷
+1 │ @import "@styles/variables.scss"; @import "@styles/mixins.scss";@use "./variables.scss" as *;
+  │                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+  src/styles/global.scss 1:65  root stylesheet
+    at Object.wrapException (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:2292:47)
+    at ScssParser0.error$3 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:113840:17)
+    at ScssParser0.error$2 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:113845:19)
+    at ScssParser0.atRule$2$root (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:119927:19)
+    at ScssParser0._stylesheet0$_statement$1$root (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:119527:22)
+    at StylesheetParser_parse__closure0.call$0 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:122825:17)
+    at ScssParser0.statements$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:115196:30)
+    at StylesheetParser_parse_closure0.call$0 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:122811:23)
+    at ScssParser0.wrapSpanFormatException$1$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:113871:25)
+    at ScssParser0.wrapSpanFormatException$1 (/Users/angelurueta/Documents/GitHub/itesm-actividad-10-frontend/node_modules/sass/sass.dart.js:113923:19)

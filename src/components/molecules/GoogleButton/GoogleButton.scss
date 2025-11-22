@@ -1,3 +1,6 @@
+@use "@styles/variables.scss" as *;
+@use "@styles/mixins.scss" as *;
+
 .google-button {
   background-color: white;
   border: 1px solid #dadce0;
